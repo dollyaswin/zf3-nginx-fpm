@@ -21,5 +21,5 @@ return [
     'Zend\Validator',
     'DoctrineModule',
     'DoctrineORMModule',
-    'Application',
+    'Chat'
 ];
