@@ -1,60 +1,116 @@
 <?php
-/**
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
-namespace Chat;
-
-use Zend\Router\Http\Literal;
-use Zend\Router\Http\Segment;
-use Zend\ServiceManager\Factory\InvokableFactory;
-
-return [
-    'router' => [
-        'routes' => [
-            'home' => [
-                'type' => Literal::class,
-                'options' => [
-                    'route'    => '/',
-                    'defaults' => [
-                        'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
-                    ],
-                ],
-            ],
-            'application' => [
-                'type'    => Segment::class,
-                'options' => [
-                    'route'    => '/chat[/:action]',
-                    'defaults' => [
-                        'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
-                    ],
-                ],
-            ],
-        ],
-    ],
-    'controllers' => [
-        'factories' => [
-            Controller\IndexController::class => InvokableFactory::class,
-        ],
-    ],
-    'view_manager' => [
-        'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'doctype'                  => 'HTML5',
-        'not_found_template'       => 'error/404',
-        'exception_template'       => 'error/index',
-        'template_map' => [
-            'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
-            'error/404'               => __DIR__ . '/../view/error/404.phtml',
-            'error/index'             => __DIR__ . '/../view/error/index.phtml',
-        ],
-        'template_path_stack' => [
-            __DIR__ . '/../view',
-        ],
-    ],
-];
+return array(
+    'service_manager' => array(
+        'factories' => array(
+            'Chat\\V1\\Rest\\Chat\\ChatResource' => 'Chat\\V1\\Rest\\Chat\\ChatResourceFactory',
+        ),
+    ),
+    'router' => array(
+        'routes' => array(
+            'chat.rest.chat' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/api/chat[/:uuid]',
+                    'defaults' => array(
+                        'controller' => 'Chat\\V1\\Rest\\Chat\\Controller',
+                    ),
+                ),
+            ),
+        ),
+    ),
+    'zf-versioning' => array(
+        'uri' => array(
+            0 => 'chat.rest.chat',
+        ),
+    ),
+    'zf-rest' => array(
+        'Chat\\V1\\Rest\\Chat\\Controller' => array(
+            'listener' => 'Chat\\V1\\Rest\\Chat\\ChatResource',
+            'route_name' => 'chat.rest.chat',
+            'route_identifier_name' => 'uuid',
+            'collection_name' => 'chat',
+            'entity_http_methods' => array(
+                0 => 'GET',
+                1 => 'POST',
+            ),
+            'collection_http_methods' => array(
+                0 => 'GET',
+                1 => 'POST',
+            ),
+            'collection_query_whitelist' => array(),
+            'page_size' => '10',
+            'page_size_param' => null,
+            'entity_class' => 'Chat\\Entity\\Chat',
+            'collection_class' => 'Chat\\V1\\Rest\\Chat\\ChatCollection',
+            'service_name' => 'Chat',
+        ),
+    ),
+    'zf-content-negotiation' => array(
+        'controllers' => array(
+            'Chat\\V1\\Rest\\Chat\\Controller' => 'HalJson',
+        ),
+        'accept_whitelist' => array(
+            'Chat\\V1\\Rest\\Chat\\Controller' => array(
+                0 => 'application/vnd.chat.v1+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ),
+        ),
+        'content_type_whitelist' => array(
+            'Chat\\V1\\Rest\\Chat\\Controller' => array(
+                0 => 'application/vnd.chat.v1+json',
+                1 => 'application/json',
+            ),
+        ),
+    ),
+    'zf-hal' => array(
+        'metadata_map' => array(
+            'Chat\\V1\\Rest\\Chat\\ChatEntity' => array(
+                'entity_identifier_name' => 'id',
+                'route_name' => 'chat.rest.chat',
+                'route_identifier_name' => 'chat_id',
+                'hydrator' => 'Zend\\Hydrator\\ArraySerializable',
+            ),
+            'Chat\\V1\\Rest\\Chat\\ChatCollection' => array(
+                'entity_identifier_name' => 'id',
+                'route_name' => 'chat.rest.chat',
+                'route_identifier_name' => 'chat_id',
+                'is_collection' => true,
+            ),
+            'Chat\\Entity\\Chat' => array(
+                'entity_identifier_name' => 'uuid',
+                'route_name' => 'chat.rest.chat',
+                'route_identifier_name' => 'uuid',
+                'hydrator' => 'Zend\\Hydrator\\ArraySerializable',
+            ),
+        ),
+    ),
+    'zf-content-validation' => array(
+        'Chat\\V1\\Rest\\Chat\\Controller' => array(
+            'input_filter' => 'Chat\\V1\\Rest\\Chat\\Validator',
+        ),
+    ),
+    'input_filter_specs' => array(
+        'Chat\\V1\\Rest\\Chat\\Validator' => array(
+            0 => array(
+                'required' => true,
+                'validators' => array(
+                    0 => array(
+                        'name' => 'Zend\\Validator\\NotEmpty',
+                        'options' => array(),
+                    ),
+                ),
+                'filters' => array(
+                    0 => array(
+                        'name' => 'Zend\\Filter\\StripTags',
+                        'options' => array(),
+                    ),
+                ),
+                'name' => 'message',
+                'description' => 'text message',
+                'field_type' => 'text',
+                'error_message' => 'Message not valid',
+            ),
+        ),
+    ),
+);
