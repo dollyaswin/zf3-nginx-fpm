@@ -1,6 +1,12 @@
 .vagrant/
 vendor/
 config/development.config.php
+data/DoctrineORMModule/Migrations/*
+data/DoctrineORMModule/Proxy/*
+!data/DoctrineORMModule/Migrations/.gitkeep
+!data/DoctrineORMModule/Proxy/.gitkeep
 data/cache/*
+data/db/*
+!data/db/.gitkeep
 !data/cache/.gitkeep
 phpunit.xml
