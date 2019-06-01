@@ -1,0 +1,32 @@
+Chat\Entity\Chat:
+    type: entity
+    table: chat
+    id:
+        uuid:
+            type: string
+            nullable: false
+            length: 36
+            options:
+                fixed: true
+            id: true
+            generator:
+                strategy: UUID
+    fields:
+        username:
+            type: string
+            nullable: true
+            length: 32
+            options:
+                fixed: true
+                default: 'null'
+        message:
+            type: text
+            nullable: false
+            length: null
+            options:
+                fixed: false
+        createdAt:
+            type: datetime
+            nullable: false
+            column: created_at
+    lifecycleCallbacks: {  }
