@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Chat\V1\Service;
 
 use \Chat\Mapper\Chat as ChatMapper;

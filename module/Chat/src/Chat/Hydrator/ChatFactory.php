@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Chat\Hydrator;
 
 use Zend\ServiceManager\Factory\FactoryInterface;
