@@ -18,6 +18,7 @@
         "zfcampus/zf-development-mode": "^3.0",
         "doctrine/doctrine-orm-module": "^1.1",
         "doctrine/migrations": "^1.4",
+	"gedmo/doctrine-extensions": "^2.4.23",
 	"symfony/yaml": "~3.4|~4.0",
 	"zfcampus/zf-apigility": "^1.4",
         "zfcampus/zf-apigility-documentation": "^1.3",

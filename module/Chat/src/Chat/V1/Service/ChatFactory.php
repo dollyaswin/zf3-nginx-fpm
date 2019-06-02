@@ -6,6 +6,7 @@ class ChatFactory
     public function __invoke($services)
     {
         $chatMapper = $services->get(\Chat\Mapper\Chat::class);
-        return new Chat($chatMapper);
+        $chatHydrator = $services->get('HydratorManager')->get('Chat\Hydrator\Chat');
+        return new Chat($chatMapper, $chatHydrator);
     }
 }

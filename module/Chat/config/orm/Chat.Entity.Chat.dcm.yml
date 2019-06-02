@@ -29,4 +29,7 @@ Chat\Entity\Chat:
             type: datetime
             nullable: false
             column: created_at
+            gedmo:
+                timestampable:
+                   on: create
     lifecycleCallbacks: {  }

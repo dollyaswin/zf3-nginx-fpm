@@ -2,6 +2,7 @@
 namespace Chat\V1\Service;
 
 use \Chat\Mapper\Chat as ChatMapper;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
 class Chat
 {
@@ -11,11 +12,17 @@ class Chat
     protected $chatMapper;
 
     /**
-     * @param \Chat\Mapper\Chat $chatMapper
+     * @var \Chat\Hydrator\Chat
      */
-    public function __construct(ChatMapper $chatMapper)
+    protected $chatHydrator;
+
+    /**
+     * @param DoctrineObject $hydrator
+     */
+    public function __construct(ChatMapper $chatMapper, DoctrineObject $chatHydrator)
     {
         $this->setChatMapper($chatMapper);
+        $this->setChatHydrator($chatHydrator);
     }
 
     /**
@@ -27,10 +34,8 @@ class Chat
      */
     public function insert($data)
     {
-        $chat = new \Chat\Entity\Chat;
-        $chat->setMessage($data->message);
-        $chat->setCreatedAt(new \DateTime);
-
+        $data = json_decode(json_encode($data), true);
+        $chat = $this->getChatHydrator()->hydrate($data, new \Chat\Entity\Chat);
         try {
             $this->getChatMapper()->save($chat);
         } catch (\Exception $e) {
@@ -54,5 +59,21 @@ class Chat
     public function getChatMapper()
     {
         return $this->chatMapper;
+    }
+
+    /**
+     * @param DoctrineObject $chatHydrator
+     */
+    public function setChatHydrator(DoctrineObject $chatHydrator)
+    {
+        $this->chatHydrator = $chatHydrator;
+    }
+
+    /**
+     * return DoctrineObject
+     */
+    public function getChatHydrator()
+    {
+        return $this->chatHydrator;
     }
 }
