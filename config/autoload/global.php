@@ -13,13 +13,21 @@
 
 return [
     'doctrine' => [
+    'eventmanager' => [
+            'orm_default' => [
+                'subscribers' => [
+                    // pick any listeners you need
+                    'Gedmo\Timestampable\TimestampableListener',
+                ],
+            ],
+        ],
         'connection' => [
             'orm_default' => [
                 'driverClass' => Doctrine\DBAL\Driver\PDOSqlite\Driver::class,
                 'params' => [
                     'path' => __DIR__ . '/../../data/db/chat.db'
                 ]
-            ],            
-        ],        
+            ],
+        ],
     ],
 ];

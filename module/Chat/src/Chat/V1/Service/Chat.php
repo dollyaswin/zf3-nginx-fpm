@@ -34,9 +34,10 @@ class Chat
      */
     public function insert($data)
     {
-        $data = json_decode(json_encode($data), true);
-        $chat = $this->getChatHydrator()->hydrate($data, new \Chat\Entity\Chat);
+        // $chat = $this->getChatHydrator()->hydrate($data, new \Chat\Entity\Chat);
+        $chat = new \Chat\Entity\Chat;
         try {
+            $chat->setMessage($data->message);
             $this->getChatMapper()->save($chat);
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());

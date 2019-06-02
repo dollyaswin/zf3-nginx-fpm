@@ -4,7 +4,7 @@
  *
  * The previous config file has been stored in ./config/modules.config.old
  */
-return array(
+return [
     'Zend\\Cache',
     'Zend\\Paginator',
     'Zend\\Form',
@@ -30,4 +30,4 @@ return array(
     'ZfrCors',
     'Application',
     'Chat',
-);
+];

@@ -22,11 +22,11 @@ class ChatResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        $insert = false;
+        $chat = null;
         try {
             $chat = $this->getChatService()->insert($data);
         } catch (\RuntimeException $e) {
-            // error response
+            return new ApiProblem(500, $e->getMessage());
         }
 
         if ($chat instanceof \Chat\Entity\Chat) {
