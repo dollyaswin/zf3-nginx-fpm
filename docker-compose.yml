@@ -1,7 +1,9 @@
-nginx-fpm:
-  image: dollyaswin/php7-fpm-basic
-  container_name: zf3
-  ports:
-   - "8080:80"
-  volumes:
-   - .:/var/www/dev
+version: '2'
+services:
+  zf3-nginx-fpm:
+    image: dollyaswin/php7-fpm-basic
+    container_name: zf3
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/dev

@@ -7,8 +7,8 @@ This test project build based on [Zend Framework 3 Skeleton](https://github.com/
 ## Installation using Docker
 ```
 docker-compose up
-docker-compose exec zf3 sh -c "cd /var/www/dev; php composer.phar install"
-docker-compose exec zf3 sh -c "cd /var/www/dev; vendor/bin/doctrine-module orm:schema-tool:create"
+docker-compose exec zf3-nginx-fpm sh -c "cd /var/www/dev; php composer.phar install"
+docker-compose exec zf3-nginx-fpm sh -c "cd /var/www/dev; vendor/bin/doctrine-module orm:schema-tool:create"
 ``` 
 
 Once installed, PHP will run using FPM with Nginx Webserver. And docker bind it to port 8080.
