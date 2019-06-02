@@ -47,6 +47,44 @@ class Chat
     }
 
     /**
+     * Retrieve chats
+     *
+     * @param   array $params
+     * @return  DoctrineORMModule\Paginator\Adapter\DoctrinePaginator
+     *
+     * @throw   \Exception
+     */
+    public function retrieve(array $params)
+    {
+        try {
+            $chats  = $this->getChatMapper()->fetchAll($params);
+            return $this->getChatMapper()->createPaginatorAdapter($chats);
+        } catch (\Exception $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
+    }
+
+    /**
+     * Fetch a chat
+     *
+     * @param   string $uuid
+     * @return  null|\Chat\Entity\Chat $chat
+     *
+     * @throw   \Exception
+     */
+    public function fetchEntity($uuid)
+    {
+        $chat = null;
+        try {
+            $chat  = $this->getChatMapper()->fetchOne($uuid);
+        } catch (\Exception $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
+
+        return $chat;
+    }
+
+    /**
      * @param \Chat\Mapper\Chat $chatMapper
      */
     public function setChatMapper(ChatMapper $chatMapper)

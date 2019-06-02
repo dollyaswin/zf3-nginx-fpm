@@ -4,9 +4,13 @@ namespace Chat\V1\Rest\Chat;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 use Chat\V1\Service\Chat as ChatService;
+use Zend\Paginator\Paginator as ZendPaginator;
 
 class ChatResource extends AbstractResourceListener
 {
+    /**
+     * @var \Chat\V1\Service\Chat
+     */
     protected $chatService;
 
     public function __construct(ChatService $chatService)
@@ -64,7 +68,12 @@ class ChatResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        $chat = $this->getChatService()->fetchEntity($id);
+        if (is_null($chat)) {
+            $chat = new ApiProblem(404, "Chat not found");
+        }
+
+        return $chat;
     }
 
     /**
@@ -75,7 +84,14 @@ class ChatResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        $chats = null;
+        try {
+            $chats = $this->getChatService()->retrieve($params->toArray());
+        } catch (\Exception $e) {
+            return new ApiProblem(500, $e->getMessage());
+        }
+
+        return new ZendPaginator($chats);
     }
 
     /**
