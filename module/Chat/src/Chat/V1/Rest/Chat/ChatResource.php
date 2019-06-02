@@ -3,9 +3,17 @@ namespace Chat\V1\Rest\Chat;
 
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
+use Chat\V1\Service\Chat as ChatService;
 
 class ChatResource extends AbstractResourceListener
 {
+    protected $chatService;
+
+    public function __construct(ChatService $chatService)
+    {
+        $this->setChatService($chatService);
+    }
+
     /**
      * Create a resource
      *
@@ -14,7 +22,16 @@ class ChatResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+        $insert = false;
+        try {
+            $chat = $this->getChatService()->insert($data);
+        } catch (\RuntimeException $e) {
+            // error response
+        }
+
+        if ($chat instanceof \Chat\Entity\Chat) {
+            return $chat;
+        }
     }
 
     /**
@@ -105,5 +122,21 @@ class ChatResource extends AbstractResourceListener
     public function update($id, $data)
     {
         return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
+    }
+
+    /**
+     * @param \Chat\V1\Service\Chat $chatService
+     */
+    public function setChatService(ChatService $chatService)
+    {
+        $this->chatService = $chatService;
+    }
+
+    /**
+     * @return \Chat\V1\Service\Chat
+     */
+    public function getChatService()
+    {
+        return $this->chatService;
     }
 }
