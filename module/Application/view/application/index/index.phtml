@@ -1,41 +1,81 @@
 <h3 style="text-align: center">Simple Chat Test Project</h3>
 
-<form class="form-inline" style="text-align:center">
-  <input type="text" id="message" placeholder="Lets type something here!" class="form-control" name="message">
-  <button type="submit" class="btn btn-default">Send</button>
+<form class="form-inline">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="input-group" style="width: 100%">
+         <input type="text" id="message" placeholder="Lets type something here!" class="form-control" name="message">
+         <div class="input-group-btn">
+           <button id="send" type="submit" class="btn btn-default">Send</button>
+         </div>
+      </div>
+    </div>
+  </div>
 </form>
 
 <ul id="chat" class="list-group">
 </ul>
 
 <script type="text/javascript">
+  $(document).ready(function () {
+    displayMessages();
+  });
+
+  $('#send').click(function (event) {
+    $(this).attr("disabled", true);
+    event.preventDefault();
+    jQuery.ajax ({
+      url: "<?php echo $this->serverUrl('/api/chat') ?>",
+      type: "POST",
+      data: JSON.stringify({message: $('#message').val()}),
+      dataType: "json",
+      contentType: "application/json; charset=utf-8",
+      success: function(response) {
+        // clear input text
+      },
+      erro: function() {
+        // error
+        alert('Cannot send message');
+      },
+      complete: function () {
+        displayMessages();
+        $('#message').val('');
+        // reload displayed messages
+        $('#send').attr("disabled", false);
+      }
+    });
+  });
+
+  function displayMessages() {
     $.getJSON('<?php echo $this->serverUrl('/api/chat') ?>', function(response) {
-        if (response._embedded.chat.length == 0) {
-            $('#chat').append($('<li>', {
-                text: 'No chat messages',
-                class: 'list-group-item list-group-item-dark'
-            }));
-        } else {
-            chats = response._embedded.chat.reverse();
-            $.each(chats, function (index, chat) {
-                createdAt  = $('<span>', {
-                    text: chat.createdAt,
-                    class: 'list-group-item-text',
-                });
-                message  = $('<span>', {
-                    text: chat.message,
-                    class: 'list-group-item-text'
-                });
-                $('#chat').append($('<li>', {
-                    class: 'list-group-item'
-                }).append(createdAt).append('&nbsp;&nbsp;').append(message));
-            })
-        }
+      if (response._embedded.chat.length == 0) {
+        $('#chat').html($('<li>', {
+          text: 'No chat messages',
+          class: 'list-group-item list-group-item-dark'
+        }));
+      } else {
+        $('#chat').html('');
+        chats = response._embedded.chat.reverse();
+        $.each(chats, function (index, chat) {
+          createdAt  = $('<span>', {
+            text: chat.createdAt,
+            class: 'list-group-item-text',
+          });
+          message  = $('<span>', {
+            text: chat.message,
+            class: 'list-group-item-text'
+          });
+          $('#chat').append($('<li>', {
+            class: 'list-group-item'
+          }).append(createdAt).append('&nbsp;&nbsp;').append(message));
+        })
+      }
     }).fail(function(xhr) {
         if (xhr.status == 500) {
-            alert("Cannot load chat");
+          alert("Cannot load chat");
         } else {
-            alert("Chat not found");
+          alert("Chat not found");
         }
-    });  
+    });
+  }
 </script>
