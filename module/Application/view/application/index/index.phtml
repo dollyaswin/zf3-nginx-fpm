@@ -1,9 +1,14 @@
+<h3 style="text-align: center">Simple Chat Test Project</h3>
+
+<form class="form-inline" style="text-align:center">
+  <input type="text" id="message" placeholder="Lets type something here!" class="form-control" name="message">
+  <button type="submit" class="btn btn-default">Send</button>
+</form>
+
 <ul id="chat" class="list-group">
 </ul>
 
 <script type="text/javascript">
-    //$("#chat").load("<?php echo $this->serverUrl('/api/chat') ?>", function(response, status, xhr) {
-     //   alert(response);
     $.getJSON('<?php echo $this->serverUrl('/api/chat') ?>', function(response) {
         if (response._embedded.chat.length == 0) {
             $('#chat').append($('<li>', {
